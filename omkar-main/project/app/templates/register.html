@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Account – The Arabian{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center py-10">
+  <div class="glass p-8 rounded-2xl shadow-xl w-full max-w-md">
+
+    <h2 class="text-3xl font-bold text-center mb-6"
+        style="color: var(--accent-2)">Create Account</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="glass border 
+                    {% if message.tags == 'error' %}border-red-500 text-red-300
+                    {% elif message.tags == 'success' %}border-green-500 text-green-300
+                    {% else %}border-gray-500 text-gray-200{% endif %}
+                    px-4 py-2 mb-4 rounded">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" class="space-y-5">
+      {% csrf_token %}
+
+      <input type="text" name="uname" placeholder="Username"
+             class="w-full px-4 py-3 glass rounded-lg focus:outline-none" required>
+
+      <input type="email" name="uemail" placeholder="Email"
+             class="w-full px-4 py-3 glass rounded-lg focus:outline-none" required>
+
+      <input type="text" name="uphone" placeholder="Phone Number"
+             class="w-full px-4 py-3 glass rounded-lg focus:outline-none" required>
+
+      <input type="password" name="upass" placeholder="Password"
+             class="w-full px-4 py-3 glass rounded-lg focus:outline-none" required>
+
+      <input type="password" name="ucpass" placeholder="Confirm Password"
+             class="w-full px-4 py-3 glass rounded-lg focus:outline-none" required>
+
+      <button type="submit"
+              class="w-full btn-primary text-center py-3 rounded-lg text-lg">
+        Register
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-sm text-gray-400">
+      Already have an account?
+      <a href="{% url 'signin' %}" class="text-accent underline">Login</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

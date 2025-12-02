@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Payment Receipt – {{ booking.resort.name }}{% endblock %}
+
+{% block content %}
+
+<style>
+    .receipt-container {
+        background: #ffffff;
+        max-width: 680px;
+        margin: auto;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        border: 1px solid #e5e7eb;
+        font-family: "Inter", sans-serif;
+    }
+    .receipt-header {
+        text-align: center;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 2px dashed #d1d5db;
+    }
+    .receipt-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #4F46E5;
+    }
+    .section-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 8px;
+        margin-top: 22px;
+    }
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    .info-label {
+        color: #6b7280;
+        font-size: 15px;
+    }
+    .info-value {
+        font-size: 15px;
+        font-weight: 600;
+        color: #111827;
+    }
+    .total-amount {
+        font-size: 22px;
+        font-weight: 700;
+        color: #10B981;
+        text-align: right;
+        margin-top: 15px;
+    }
+    .btn-pay {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg,#7C3AED,#5B21B6);
+        color: white;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 25px;
+    }
+    .trust-badges {
+        margin-top: 30px;
+        text-align: center;
+        color: #6b7280;
+        font-size: 13px;
+    }
+</style>
+
+<div class="py-12">
+    <div class="receipt-container">
+
+        <!-- RECEIPT HEADER -->
+        <div class="receipt-header">
+            <h2 class="receipt-title">Booking Receipt</h2>
+            <p class="text-gray-500 text-sm">Advance Payment Required</p>
+            <p class="text-gray-700 font-semibold mt-1">Booking ID: #{{ booking.id }}</p>
+        </div>
+
+        <!-- RESORT DETAILS -->
+        <h3 class="section-title">🏨 Resort Details</h3>
+        <div class="info-row">
+            <p class="info-label">Resort Name</p>
+            <p class="info-value">{{ booking.resort.name }}</p>
+        </div>
+
+        <!-- GUEST DETAILS -->
+        <h3 class="section-title">👤 Guest Information</h3>
+        <div class="info-row">
+            <p class="info-label">Full Name</p>
+            <p class="info-value">{{ booking.guest_name }}</p>
+        </div>
+        <div class="info-row">
+            <p class="info-label">Email</p>
+            <p class="info-value">{{ booking.guest_email }}</p>
+        </div>
+        <div class="info-row">
+            <p class="info-label">Phone</p>
+            <p class="info-value">{{ booking.guest_phone }}</p>
+        </div>
+
+        <!-- STAY DETAILS -->
+        <h3 class="section-title">📅 Stay Information</h3>
+        <div class="info-row">
+            <p class="info-label">Check-In</p>
+            <p class="info-value">{{ booking.check_in }}</p>
+        </div>
+        <div class="info-row">
+            <p class="info-label">Check-Out</p>
+            <p class="info-value">{{ booking.check_out }}</p>
+        </div>
+        <div class="info-row">
+            <p class="info-label">Total Days</p>
+            <p class="info-value">{{ days }} day{% if days > 1 %}s{% endif %}</p>
+        </div>
+        <div class="info-row">
+            <p class="info-label">Guests</p>
+            <p class="info-value">{{ booking.guests }}</p>
+        </div>
+
+        <!-- PAYMENT BREAKDOWN -->
+        <h3 class="section-title">💳 Payment Summary</h3>
+        <div class="info-row">
+            <p class="info-label">Advance Per Person</p>
+            <p class="info-value">₹50</p>
+        </div>
+        <div class="info-row">
+            <p class="info-label">Total Advance</p>
+            <p class="info-value">₹{{ amount }} (₹50 × {{ booking.guests }})</p>
+        </div>
+        <div class="info-row">
+            <p class="info-label">Pending Amount</p>
+            <p class="info-value text-yellow-600">₹{{ booking.pending_amount }}</p>
+        </div>
+
+        <p class="total-amount">
+            Pay Now: ₹{{ amount }}
+        </p>
+
+        <!-- PAY BUTTON -->
+        <button id="pay-btn" class="btn-pay">
+            Pay ₹{{ amount }} Securely with Razorpay
+        </button>
+        <h3 class="section-title">📲 Your Check-In QR Code</h3>
+
+<div class="text-center mb-6">
+    <img src="{{ booking.qr_code.url }}" alt="QR Code" class="mx-auto w-40 h-40 rounded-lg shadow-lg">
+    <p class="text-gray-600 text-sm mt-2">Show this QR when arriving at the resort.</p>
+</div>
+
+
+        <!-- TRUST BADGES -->
+        <div class="trust-badges">
+            🔐 100% Secure Payments | Powered by Razorpay  
+            <br>
+            SSL Encrypted | Instant Confirmation
+        </div>
+
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.getElementById("pay-btn").onclick = function(e){
+    var options = {
+        "key": "{{ razorpay_key }}",
+        "amount": "{{ amount|floatformat:0 }}00",
+        "currency": "INR",
+        "name": "{{ booking.resort.name }}",
+        "description": "Advance Booking Payment",
+        "order_id": "{{ order_id }}",
+        "handler": function (response) {
+            window.location.href = "/booking/confirmation/{{ booking.id }}/?payid=" + response.razorpay_payment_id;
+
+        },
+        "theme": {"color": "#7C3AED"}
+    };
+    var rzp = new Razorpay(options);
+    rzp.open();
+    e.preventDefault();
+}
+</script>
+
+{% endblock %}

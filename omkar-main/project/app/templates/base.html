@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}The Arabian – Premium Resorts{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <style>
+    /* ------------------------------------------------------
+       🌟 GLOBAL GREEN NEON THEME
+    ------------------------------------------------------- */
+
+    :root {
+      --bg: radial-gradient(circle at top, #0F172A 0, #0B1523 40%, #0A1322 100%);
+      --bg-solid: #0A1322;
+      --glass: rgba(17,25,40,0.65);
+      --muted: #9ca3af;
+      --text: #e5e7eb;
+
+      /* GREEN–MINT–CYAN premium palette */
+      --accent-1:#34D399;   /* Emerald green */
+      --accent-2:#10FFB3;   /* Mint neon */
+      --accent-3:#22D3EE;   /* Aqua cyan */
+
+      /* Neon CTA gradient */
+      --cta-gradient: linear-gradient(125deg,#10FFB3,#34D399,#22D3EE);
+
+      --glass-border: rgba(52,211,153,0.35);
+    }
+
+    html[data-theme="light"] {
+      --bg: radial-gradient(circle at top,#f0fcf8,#e0f7ff,#ffffff);
+      --bg-solid:#ffffff;
+      --glass: rgba(255,255,255,0.9);
+      --muted: #6b7280;
+      --text:#0f172a;
+
+      --accent-1:#34D399;
+      --accent-2:#10FFB3;
+      --accent-3:#22D3EE;
+
+      --cta-gradient: linear-gradient(125deg,#34D399,#10FFB3,#22D3EE);
+      --glass-border: rgba(52,211,153,0.5);
+    }
+
+    body{
+      min-height:100vh;
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Montserrat",sans-serif;
+      transition: background 0.4s ease, color 0.3s ease;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    /* 🌈 Neon glowing orbs */
+    .orb {
+      position:fixed;
+      border-radius:999px;
+      filter:blur(65px);
+      opacity:.45;
+      z-index:-1;
+    }
+    .orb-1 { width:330px; height:330px; background:#10ffb355; top:-70px; left:-60px; }
+    .orb-2 { width:260px; height:260px; background:#34d39955; top:35%; right:-60px; }
+    .orb-3 { width:230px; height:230px; background:#22d3ee55; bottom:-80px; left:15%; }
+
+    /* Glass Panels */
+    .glass{
+      background:var(--glass);
+      border:1px solid var(--glass-border);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      box-shadow:0 12px 40px rgba(0,0,0,0.35);
+    }
+
+    /* Buttons */
+    .btn-primary{
+      background-image:var(--cta-gradient);
+      background-size:200% 200%;
+      padding:8px 18px;
+      border-radius:999px;
+      color:#072318;
+      font-weight:700;
+      font-size:.9rem;
+      transition:0.25s ease;
+      box-shadow:0 0 18px rgba(16,255,179,0.4);
+    }
+    .btn-primary:hover{
+      transform:translateY(-2px) scale(1.03);
+      background-position:100% 0;
+      box-shadow:0 0 26px rgba(34,211,153,0.7);
+    }
+
+    .btn-ghost{
+      background:transparent;
+      border:1px solid var(--glass-border);
+      padding:8px 16px;
+      border-radius:999px;
+      color:var(--text);
+      transition:.25s;
+    }
+    .btn-ghost:hover{
+      background:rgba(52,211,153,0.12);
+      border-color:rgba(52,211,153,0.7);
+    }
+
+    .container-ll{
+      max-width:1250px;
+      margin:auto;
+      padding:0 1.2rem;
+    }
+
+    /* Navbar links */
+    .nav-link{
+      font-size:.9rem;
+      color:var(--muted);
+      position:relative;
+    }
+    .nav-link::after{
+      content:"";
+      position:absolute;
+      bottom:-3px;
+      left:0;
+      width:0;
+      height:2px;
+      background:var(--cta-gradient);
+      border-radius:999px;
+      transition:.25s ease;
+    }
+    .nav-link:hover{ color:var(--accent-2); }
+    .nav-link:hover::after{ width:100%; }
+
+    /* Sticky footer */
+    footer{
+      box-shadow:0 -15px 40px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+<!-- 🌈 Neon Ambient Orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- NAVBAR -->
+<header class="glass sticky top-0 z-40 border-b border-gray-800/60">
+  <div class="container-ll flex items-center justify-between py-3">
+
+    <!-- Logo -->
+    <a href="{% url 'index' %}" class="flex items-center gap-3">
+      <div class="glass p-2 rounded-xl border border-white/10">
+        <img src="{% static 'img/logo-water.png' %}" class="w-9 h-9 rounded-lg object-cover">
+      </div>
+      <div>
+        <div class="font-extrabold text-lg tracking-wide flex items-center gap-1">
+          The Arabian
+        </div>
+        <div class="text-[0.62rem] tracking-wider uppercase text-gray-400">
+          Tropical Waterpark & Luxury Resorts
+        </div>
+      </div>
+    </a>
+
+    <!-- Nav links (Desktop) -->
+    <nav class="hidden md:flex gap-6 items-center font-semibold text-sm">
+      <a href="{% url 'index' %}" class="nav-link">Home</a>
+      <a href="{% url 'blog' %}" class="nav-link">Blog</a>
+      <a href="{% url 'gallery' %}" class="nav-link">Gallery</a>
+      <a href="{% url 'events' %}" class="nav-link">Events</a>
+      <a href="{% url 'about_us' %}" class="nav-link">About Us</a>
+      <a href="{% url 'contact' %}" class="nav-link">Contact</a>
+    </nav>
+
+    <!-- Right actions -->
+    <div class="flex items-center gap-3">
+
+      <!-- Theme Toggle -->
+      <button id="themeToggle" class="btn-ghost px-3 py-1 text-xs">Theme</button>
+
+      <!-- Wishlist -->
+      {% if user.is_authenticated %}
+      <a href="{% url 'wishlist' %}" class="relative hidden md:inline-block">
+        <svg class="w-7 h-7"
+             style="filter:drop-shadow(0 0 12px rgba(34,211,153,0.7))"
+             fill="none" stroke="#10FFB3" viewBox="0 0 24 24">
+          <path stroke-width="2"
+           d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.637l1.318-1.319a4.5 
+           4.5 0 116.364 6.364L12 21l-7.682-8.318a4.5 
+           4.5 0 010-6.364z"/>
+        </svg>
+        <span class="absolute -top-1 -right-2 bg-emerald-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">
+          {{ request.user.wishlist_set.count }}
+        </span>
+      </a>
+      {% endif %}
+
+      <!-- Auth buttons -->
+      <div class="hidden md:flex items-center gap-2">
+        {% if user.is_authenticated %}
+          <a href="{% url 'profile' %}" class="btn-ghost text-xs">{{ user.username }}</a>
+          <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="btn-primary text-xs">Logout</button>
+          </form>
+        {% else %}
+          <a href="{% url 'signin' %}" class="btn-ghost text-xs">Login</a>
+          <a href="{% url 'register' %}" class="btn-primary text-xs">Sign Up</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Page Content -->
+<main class="container-ll py-10 flex-grow">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- FOOTER -->
+<footer class="glass py-6 text-center text-gray-400 text-xs border-t border-gray-800/60">
+  © 2025 The Arabian · Luxury Waterpark & Resorts · All Rights Reserved.
+</footer>
+
+<!-- Theme Toggle Script -->
+<script>
+  const html = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+
+  if (localStorage.getItem("theme") === "light") {
+    html.setAttribute("data-theme", "light");
+  }
+
+  toggle.addEventListener("click", () => {
+    let next = html.getAttribute("data-theme") === "light" ? "dark" : "light";
+    html.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+  });
+</script>
+
+</body>
+</html>

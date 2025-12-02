@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto p-6 bg-white mt-10 shadow-xl rounded-xl">
+    <h2 class="text-3xl font-extrabold text-purple-800 mb-6 text-center">Book {{ resort.name }}</h2>
+    {% if form.errors %}
+    <div class="bg-red-100 border border-red-400 text-red-700 p-4 rounded-lg mb-4">
+        <strong>Oops! Please fix the following issues:</strong>
+        <ul class="list-disc list-inside mt-2 text-sm">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                {% endfor %}
+                <h2 class="text-3xl font-extrabold text-purple-800 mb-6 text-center">Book {{ resort.name }}</h2>
+
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+
+    {% if resort.image %}
+        <img src="{{ resort.image.url }}" alt="{{ resort.name }}" class="w-full h-64 object-cover rounded mb-6 shadow-md">
+    {% endif %}
+
+    <form method="post" action="{% url 'confirm_booking' resort.id %}" class="space-y-6">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input name="name" required type="text" placeholder="Your Name" class="border p-3 rounded-lg w-full shadow-sm">
+            <input name="email" required type="email" placeholder="Email" class="border p-3 rounded-lg w-full shadow-sm">
+            <input name="phone" required type="text" placeholder="Phone Number" class="border p-3 rounded-lg w-full shadow-sm">
+            <input name="check_in" required type="date" id="check_in" class="border p-3 rounded-lg w-full shadow-sm">
+            <input name="check_out" required type="date" id="check_out" class="border p-3 rounded-lg w-full shadow-sm">
+            <input name="guests" required type="number" id="guests" value="1" min="1" class="border p-3 rounded-lg w-full shadow-sm">
+        </div>
+
+        <div class="text-right">
+            <p class="text-xl font-semibold text-gray-800">Total: ₹ <span id="totalPrice">0</span></p>
+        </div>
+
+        <button type="submit" class="w-full bg-purple-700 text-white text-lg py-3 rounded-lg hover:bg-purple-800 transition duration-300">
+            Proceed to Pay
+        </button>
+    </form>
+</div>
+
+<script>
+    const pricePerGuest = {{ resort.price_per_guest }};
+    const guestsInput = document.getElementById('guests');
+    const checkInInput = document.getElementById('check_in');
+    const checkOutInput = document.getElementById('check_out');
+    const totalPrice = document.getElementById('totalPrice');
+
+    function updatePrice() {
+        const guests = parseInt(guestsInput.value || 0);
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+        const nights = (checkOut - checkIn) / (1000 * 60 * 60 * 24);
+        const validNights = !isNaN(nights) && nights > 0;
+        const total = guests * pricePerGuest * (validNights ? nights : 1);
+        totalPrice.textContent = total.toFixed(2);
+    }
+
+    guestsInput.addEventListener('input', updatePrice);
+    checkInInput.addEventListener('change', updatePrice);
+    checkOutInput.addEventListener('change', updatePrice);
+</script>
+{% endblock %}

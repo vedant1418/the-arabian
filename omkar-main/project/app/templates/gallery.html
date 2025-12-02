@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative h-[400px] bg-center bg-cover flex items-center justify-center" style="background-image: url('{% static 'images/gallery-hero.jpg' %}')">
+    <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+    <div class="z-10 text-center text-white px-4">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 animate__animated animate__fadeInDown">Our Gallery</h1>
+        <p class="text-lg animate__animated animate__fadeInUp">Experience the beauty of Manthan Resort through pictures</p>
+    </div>
+</section>
+
+<!-- Gallery Grid -->
+<section class="container mx-auto px-4 py-16">
+    <h2 class="text-3xl font-bold text-center text-purple-800 mb-12">Captured Moments</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {% for img in images %}
+        <div class="relative overflow-hidden rounded-2xl shadow-lg group" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:'100' }}">
+            <img src="{{ img.image.url }}" alt="{{ img.title }}" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
+            <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                <p class="text-white text-lg font-semibold drop-shadow">{{ img.title }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center col-span-3 text-gray-500 text-lg">No images have been added yet. Check back soon!</p>
+        {% endfor %}
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center mt-16" data-aos="fade-up">
+        <a href="{% url 'contact' %}" class="inline-block bg-purple-700 hover:bg-yellow-400 text-white hover:text-purple-900 font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105 duration-300">
+            Plan Your Visit →
+        </a>
+    </div>
+</section>
+
+<!-- AOS Animation -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init();</script>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Banner with Parallax Effect -->
+<section class="relative h-[450px] bg-fixed bg-center bg-cover flex items-center justify-center shadow-inner" style="background-image: url('{% static 'images/blog-hero.jpg' %}')">
+    <div class="absolute inset-0 bg-gradient-to-br from-black via-black/70 to-purple-900/60"></div>
+    <div class="z-10 text-center text-white px-4 animate__animated animate__fadeIn">
+        <h1 class="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-lg">The Arabian Blog</h1>
+        <p class="text-2xl font-light">Dive into stories, adventures & behind-the-scenes magic</p>
+    </div>
+</section>
+
+<!-- Blog Section -->
+<section class="container mx-auto px-4 py-20">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+        {% for post in blog_posts %}
+        <div class="group bg-white rounded-3xl overflow-hidden shadow-xl border border-purple-100 hover:shadow-2xl hover:scale-[1.02] transform transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'100' }}">
+            <div class="h-56 bg-cover bg-center transition duration-300" style="background-image: url('{{ post.image.url }}')"></div>
+            <div class="p-6">
+                <span class="inline-block text-xs bg-yellow-400 text-white font-semibold px-3 py-1 rounded-full shadow mb-2 animate__animated animate__bounceIn">
+                    {{ post.date_posted|date:"M d, Y" }}
+                </span>
+                <h2 class="text-xl font-bold text-gray-800 mb-2 transition group-hover:text-purple-700">
+                    {{ post.title }}
+                </h2>
+                <p class="text-gray-600 text-sm mb-4">{{ post.excerpt|truncatechars:120 }}</p>
+                <a href="{% url 'blog_detail' post.id %}" class="text-purple-600 font-semibold hover:text-yellow-500 transition">
+                    Read More →
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center col-span-3 text-gray-500 text-lg">No blog posts available yet. Stay tuned!</p>
+        {% endfor %}
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center mt-20" data-aos="zoom-in">
+        <h3 class="text-2xl font-semibold text-purple-800 mb-4">Have a Story to Share?</h3>
+        <a href="{% url 'contact' %}" class="inline-block bg-gradient-to-r from-purple-700 to-yellow-500 hover:from-yellow-500 hover:to-purple-700 text-white font-bold py-3 px-10 rounded-full shadow-lg transition transform hover:scale-105">
+            Contact Us
+        </a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #5A2DA4;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            color: #5A2DA4;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .info-box {
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .info-box p {
+            margin: 4px 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        ul {
+            margin: 8px 0;
+            padding-left: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Booking Receipt – Manthan Resort</h2>
+
+    <!-- GUEST DETAILS -->
+    <div class="section-title">Guest Information</div>
+    <div class="info-box">
+        <p><strong>Name:</strong> {{ booking.guest_name }}</p>
+        <p><strong>Email:</strong> {{ booking.guest_email }}</p>
+        <p><strong>Phone:</strong> {{ booking.guest_phone }}</p>
+    </div>
+
+    <!-- RESORT DETAILS -->
+    <div class="section-title">Resort Details</div>
+    <div class="info-box">
+        <p><strong>Resort:</strong> {{ booking.resort.name }}</p>
+        <p><strong>Location:</strong> {{ booking.resort.location }}</p>
+        <p><strong>Check-in:</strong> {{ booking.check_in }}</p>
+        <p><strong>Check-out:</strong> {{ booking.check_out }}</p>
+        <p><strong>Total Guests:</strong> {{ booking.guests }}</p>
+    </div>
+
+    <!-- PAYMENT DETAILS -->
+    <div class="section-title">Payment Summary</div>
+    <div class="info-box">
+        <p><strong>Total Booking Amount:</strong> ₹{{ booking.total_price }}</p>
+        <p><strong>Advance Paid:</strong> ₹{{ booking.advance_paid }}</p>
+        <p><strong>Pending Amount (Pay at Resort):</strong> ₹{{ booking.pending_amount }}</p>
+        <p><strong>Payment Status:</strong> {{ booking.payment_status }}</p>
+    </div>
+
+    <hr>
+
+    <!-- REFUND POLICY -->
+    <div class="section-title">Refund Policy</div>
+    <div class="info-box">
+        <ul>
+            <li>Advance payment is <strong>non-refundable</strong> once booking is confirmed.</li>
+            <li>Cancellations must be made <strong>24 hours before check-in</strong> to apply for refund eligibility.</li>
+            <li>Refunds (if applicable) will be processed within <strong>3–7 business days</strong>.</li>
+            <li>No refund for late arrivals or no-shows.</li>
+            <li>Management reserves the right to approve or deny refund requests.</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        Thank you for booking with <strong>Manthan Resort</strong>!  
+        <br>We look forward to hosting you.
+    </div>
+    <hr>
+<h3>Refund & Cancellation Terms</h3>
+<p>
+1. Only advance payment (₹{{ booking.advance_paid }}) is refundable.<br>
+2. Remaining amount (₹{{ booking.pending_amount }}) should be paid at the resort.<br>
+3. Refund requests must be made at least 24 hours before check-in.<br>
+4. Refund processing time is 3–7 business days.<br>
+5. Resort cancellations will result in full advance refund.<br>
+6. No-show bookings are non-refundable.<br>
+7. Changes to booking date allowed based on availability.
+</p>
+
+
+</body>
+</html>

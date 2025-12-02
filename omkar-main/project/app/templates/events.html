@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="container mx-auto px-6 py-16">
+    <h2 class="text-4xl font-extrabold text-center mb-10 dark:text-teal-300 text-purple-700">
+        Upcoming Events
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-10">
+        {% for event in events %}
+        <div class="glass p-8 rounded-2xl shadow-lg">
+            <h3 class="text-2xl font-bold">{{ event.title }}</h3>
+            <p class="mt-2 opacity-80">{{ event.description }}</p>
+            <p class="mt-4 font-semibold">📅 {{ event.date }}</p>
+
+            <button class="mt-6 bg-purple-700 text-white dark:bg-teal-400 dark:text-black px-6 py-3 rounded-lg font-bold">
+                Book Now
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

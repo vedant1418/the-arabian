@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Booking Details{% endblock %}
+
+{% block content %}
+<section class="max-w-3xl mx-auto mt-12 mb-16 p-8 rounded-2xl glass border border-white/10">
+
+    <h2 class="text-3xl font-extrabold text-teal-300 mb-6">Booking Details</h2>
+
+    <div class="grid sm:grid-cols-2 gap-6 text-gray-200">
+
+        <div>
+            <p class="font-semibold text-teal-200">Resort</p>
+            <p>{{ booking.resort.name }}</p>
+            <p class="text-sm text-gray-400">{{ booking.resort.location }}</p>
+        </div>
+
+        <div>
+            <p class="font-semibold text-teal-200">Dates</p>
+            <p>Check-in: {{ booking.check_in }}</p>
+            <p>Check-out: {{ booking.check_out }}</p>
+        </div>
+
+        <div>
+            <p class="font-semibold text-teal-200">Guests</p>
+            <p>{{ booking.guests }} guest(s)</p>
+        </div>
+
+        <div>
+            <p class="font-semibold text-teal-200">Payment Status</p>
+            <p class="
+                {% if booking.payment_status == 'Paid' %}text-green-400
+                {% elif booking.payment_status == 'Refunded' %}text-red-400
+                {% else %}text-yellow-300{% endif %}
+                font-bold
+            ">
+                {{ booking.payment_status }}
+            </p>
+        </div>
+
+        <div>
+            <p class="font-semibold text-teal-200">Advance Paid</p>
+            <p class="text-green-400 font-bold">₹{{ booking.advance_paid }}</p>
+        </div>
+
+        <div>
+            <p class="font-semibold text-teal-200">Pending Amount</p>
+            <p class="text-yellow-300 font-bold">₹{{ booking.pending_amount }}</p>
+        </div>
+    </div>
+
+    <!-- QR Code -->
+    <div class="mt-8 text-center">
+        <p class="text-teal-200 font-semibold mb-2">Your Booking QR Code</p>
+        <img src="data:image/png;base64,{{ qr_code }}" class="mx-auto w-40 shadow-xl rounded-lg" />
+    </div>
+
+    <!-- Action buttons -->
+    <div class="mt-10 flex flex-wrap justify-center gap-4">
+
+        <a href="{% url 'booking_history' %}"
+           class="btn-ghost px-6 py-3 rounded-lg shadow text-gray-100">
+            ← Back to History
+        </a>
+
+        <a href="{% url 'download_receipt' booking.id %}"
+           class="btn-primary px-6 py-3 rounded-lg shadow">
+            Download Receipt
+        </a>
+
+        {% if booking.payment_status == 'Paid' %}
+        <a href="{% url 'refund_booking' booking.id %}"
+           class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg shadow text-white">
+            Request Refund
+        </a>
+        {% endif %}
+    </div>
+
+</section>
+{% endblock %}

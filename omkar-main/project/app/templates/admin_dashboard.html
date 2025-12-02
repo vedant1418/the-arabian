@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Admin Dashboard – The Arabian{% endblock %}
+
+{% block content %}
+
+<div class="min-h-[80vh] flex bg-gradient-to-br from-black via-slate-950 to-emerald-900/60 rounded-3xl shadow-2xl overflow-hidden border border-emerald-500/20">
+
+  <!-- SIDEBAR -->
+  <aside class="hidden md:flex w-64 flex-col bg-black/60 border-r border-emerald-500/20 backdrop-blur-xl">
+    <div class="px-6 py-6 border-b border-emerald-500/20">
+      <h1 class="text-xl font-bold text-emerald-400 tracking-tight">Admin Panel</h1>
+      <p class="text-xs text-emerald-200/60 mt-1">Manthan Resorts / The Arabian</p>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-1 text-sm">
+      <a href="{% url 'admin_dashboard' %}"
+         class="flex items-center gap-3 px-3 py-2 rounded-xl bg-emerald-500/15 text-emerald-200 border border-emerald-500/40">
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-400/20">📊</span>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-xl text-emerald-100/70 hover:text-emerald-100 hover:bg-emerald-500/10 transition">
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-400/10">🧾</span>
+        <span>Bookings</span>
+      </a>
+
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-xl text-emerald-100/70 hover:text-emerald-100 hover:bg-emerald-500/10 transition">
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-400/10">🏝️</span>
+        <span>Resorts</span>
+      </a>
+
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-xl text-emerald-100/70 hover:text-emerald-100 hover:bg-emerald-500/10 transition">
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-400/10">🎟️</span>
+        <span>Coupons</span>
+      </a>
+    </nav>
+
+    <div class="px-6 py-4 border-t border-emerald-500/20 text-xs text-emerald-200/60">
+      Logged in as<br>
+      <span class="text-emerald-200">{{ request.user.username }}</span>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
+
+    <!-- TOP BAR -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <div>
+        <p class="text-xs uppercase tracking-[0.25em] text-emerald-300/60 mb-1">Overview</p>
+        <h2 class="text-2xl md:text-3xl font-bold text-emerald-50 tracking-tight">Analytics Dashboard</h2>
+        <p class="text-xs md:text-sm text-emerald-100/60 mt-1">Live snapshot of users, bookings & revenue across all resorts.</p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span class="hidden sm:inline-flex items-center gap-2 text-xs text-emerald-100/70 bg-black/40 border border-emerald-500/30 rounded-full px-3 py-1">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+          </span>
+          Live data
+        </span>
+
+        <a href="/admin/" class="text-xs sm:text-sm px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-medium shadow-lg shadow-emerald-500/40 transition">
+          Django Admin
+        </a>
+      </div>
+    </div>
+
+    <!-- STATS CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+
+      <div class="glass-card relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-emerald-500/0 to-emerald-400/10 pointer-events-none"></div>
+        <div class="relative px-4 py-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs font-medium text-emerald-200/70 uppercase tracking-wider">Total Revenue</p>
+              <p class="mt-2 text-2xl font-semibold text-emerald-50">₹ {{ total_revenue|floatformat:0 }}</p>
+            </div>
+            <div class="h-10 w-10 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-xl">💰</div>
+          </div>
+          <p class="mt-2 text-[11px] text-emerald-100/60">All completed & paid bookings.</p>
+        </div>
+      </div>
+
+      <div class="glass-card px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-emerald-200/70 uppercase tracking-wider">Total Bookings</p>
+            <p class="mt-2 text-2xl font-semibold text-emerald-50">{{ total_bookings }}</p>
+          </div>
+          <div class="h-10 w-10 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-xl">📅</div>
+        </div>
+        <p class="mt-2 text-[11px] text-emerald-100/60">All time across all resorts.</p>
+      </div>
+
+      <div class="glass-card px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-emerald-200/70 uppercase tracking-wider">Today’s Bookings</p>
+            <p class="mt-2 text-2xl font-semibold text-emerald-50">{{ today_bookings }}</p>
+          </div>
+          <div class="h-10 w-10 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-xl">⚡</div>
+        </div>
+        <p class="mt-2 text-[11px] text-emerald-100/60">Bookings created in last 24 hours.</p>
+      </div>
+
+      <div class="glass-card px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-emerald-200/70 uppercase tracking-wider">Registered Users</p>
+            <p class="mt-2 text-2xl font-semibold text-emerald-50">{{ total_users }}</p>
+          </div>
+          <div class="h-10 w-10 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-xl">👥</div>
+        </div>
+        <p class="mt-2 text-[11px] text-emerald-100/60">Total unique users.</p>
+      </div>
+
+    </div>
+
+    <!-- CHARTS -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-6">
+
+      <div class="xl:col-span-2 glass-card p-4 md:p-5">
+        <h3 class="text-sm font-semibold text-emerald-50 mb-3">Monthly Revenue</h3>
+        <p class="text-xs text-emerald-100/60 mb-3">Trend of paid bookings over time.</p>
+        <div class="h-64"><canvas id="revenueChart"></canvas></div>
+      </div>
+
+      <div class="glass-card p-4 md:p-5">
+        <h3 class="text-sm font-semibold text-emerald-50 mb-3">Monthly Bookings</h3>
+        <p class="text-xs text-emerald-100/60 mb-3">Bookings created each month.</p>
+        <div class="h-64"><canvas id="bookingsChart"></canvas></div>
+      </div>
+
+    </div>
+
+    <!-- TOP RESORTS -->
+    <div class="glass-card p-4 md:p-5 mb-6">
+      <h3 class="text-sm font-semibold text-emerald-50 mb-3">Top Resorts by Bookings</h3>
+      <p class="text-xs text-emerald-100/60 mb-4">Most booked resorts on the platform.</p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+        <div class="lg:col-span-2 h-64">
+          <canvas id="topResortsChart"></canvas>
+        </div>
+
+        <ul class="space-y-2 text-xs">
+          {% for name, count in top_resorts %}
+          <li class="flex items-center justify-between px-3 py-2 rounded-xl bg-black/40 border border-emerald-500/20">
+            <span class="text-emerald-50">{{ name }}</span>
+            <span class="text-emerald-300 font-semibold">{{ count }} bookings</span>
+          </li>
+          {% endfor %}
+        </ul>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Glass style -->
+<style>
+  .glass-card {
+    @apply rounded-2xl border border-emerald-500/25 bg-black/40 backdrop-blur-xl shadow-xl;
+  }
+</style>
+
+<!-- Charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const labels = JSON.parse('{{ labels|safe|escapejs }}');
+  const revenueData = JSON.parse('{{ revenue_data|safe|escapejs }}');
+  const bookingsData = JSON.parse('{{ bookings_data|safe|escapejs }}');
+  const topResortLabels = JSON.parse('{{ top_resort_labels|safe|escapejs }}');
+  const topResortCounts = JSON.parse('{{ top_resort_counts|safe|escapejs }}');
+
+  // Revenue Chart
+  new Chart(document.getElementById('revenueChart'), {
+    type: 'line',
+    data: { labels, datasets: [{ label: 'Revenue (₹)', data: revenueData, borderWidth: 2, tension: 0.35 }] },
+    options: { responsive: true }
+  });
+
+  // Bookings Chart
+  new Chart(document.getElementById('bookingsChart'), {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Bookings', data: bookingsData }] },
+    options: { responsive: true }
+  });
+
+  // Top Resorts Chart
+  new Chart(document.getElementById('topResortsChart'), {
+    type: 'bar',
+    data: { labels: topResortLabels, datasets: [{ label: 'Bookings', data: topResortCounts }] },
+    options: { indexAxis: 'y', responsive: true }
+  });
+</script>
+
+{% endblock %}

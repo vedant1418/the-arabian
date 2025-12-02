@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Booking History – The Arabian{% endblock %}
+
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-6">My Booking History</h1>
+
+<!-- FILTER TABS -->
+<div class="mb-6 flex flex-wrap gap-2">
+  <button class="filter-tab px-4 py-2 rounded-full text-sm bg-teal-600 text-white"
+          data-filter="all">
+    All
+  </button>
+  <button class="filter-tab px-4 py-2 rounded-full text-sm bg-gray-800 text-gray-200"
+          data-filter="active">
+    Active
+  </button>
+  <button class="filter-tab px-4 py-2 rounded-full text-sm bg-gray-800 text-gray-200"
+          data-filter="cancelled">
+    Cancelled
+  </button>
+  <button class="filter-tab px-4 py-2 rounded-full text-sm bg-gray-800 text-gray-200"
+          data-filter="refunded">
+    Refunded
+  </button>
+</div>
+
+{% if bookings %}
+<div class="space-y-6">
+
+  {% for b in bookings %}
+  <div class="booking-card glass p-5 rounded-2xl border border-white/10 shadow-xl flex flex-col md:flex-row gap-4"
+       data-status-booking="{{ b.booking_status }}"
+       data-status-payment="{{ b.payment_status }}">
+
+    <!-- LEFT: IMAGE -->
+    <div class="w-full md:w-40 flex-shrink-0">
+      {% if b.resort.image %}
+      <img src="{{ b.resort.image.url }}"
+           class="w-full h-32 md:h-40 object-cover rounded-xl"
+           alt="{{ b.resort.name }}">
+      {% else %}
+      <div class="w-full h-32 md:h-40 bg-black/40 rounded-xl flex items-center justify-center text-gray-400 text-xs">
+        No Image
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- RIGHT: CONTENT -->
+    <div class="flex-1 flex flex-col justify-between">
+      <!-- Top Row -->
+      <div class="flex justify-between items-start gap-3">
+        <div>
+          <h2 class="text-lg md:text-xl font-semibold text-white">{{ b.resort.name }}</h2>
+          <p class="text-xs md:text-sm text-gray-400 mt-1">
+            From <span class="text-gray-200">{{ b.check_in }}</span>
+            to <span class="text-gray-200">{{ b.check_out }}</span>
+            • Guests: {{ b.guests }}
+          </p>
+
+          <!-- Price Info -->
+          <p class="mt-2 text-teal-300 font-bold text-base">
+            Total: ₹{{ b.total_price }}
+          </p>
+          <p class="text-green-300 text-xs mt-1">
+            Advance Paid: ₹{{ b.advance_paid }}
+          </p>
+          <p class="text-yellow-300 text-xs">
+            Pending Amount: ₹{{ b.pending_amount }}
+          </p>
+        </div>
+
+        <!-- Status Pills -->
+        <div class="text-right text-[11px] space-y-1">
+          <p class="px-3 py-1 rounded-full bg-gray-800 text-gray-200 inline-block">
+            Booking: {{ b.booking_status }}
+          </p>
+          <p class="px-3 py-1 rounded-full bg-gray-800 text-gray-200 inline-block">
+            Payment: {{ b.payment_status }}
+          </p>
+        </div>
+      </div>
+
+      <!-- STATUS TIMELINE -->
+      <div class="mt-4 flex flex-wrap items-center gap-2 text-[11px] text-gray-300">
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full 
+            {% if b.payment_status == 'Paid' or b.payment_status == 'Refunded' %}bg-green-400{% else %}bg-gray-500{% endif %}">
+          </span>
+          <span>Advance Paid</span>
+        </div>
+        <span class="text-gray-500">›</span>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full 
+            {% if b.booking_status == 'Cancelled' %}bg-red-400{% else %}bg-green-400{% endif %}">
+          </span>
+          <span>
+            {% if b.booking_status == 'Cancelled' %}Cancelled{% else %}Confirmed{% endif %}
+          </span>
+        </div>
+        <span class="text-gray-500">›</span>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full 
+            {% if b.payment_status == 'Refunded' %}bg-blue-400{% else %}bg-gray-500{% endif %}">
+          </span>
+          <span>
+            {% if b.payment_status == 'Refunded' %}Refunded{% else %}Pending On-site{% endif %}
+          </span>
+        </div>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="mt-4 flex flex-wrap gap-3">
+        {% if b.booking_status != "Cancelled" and b.payment_status != "Paid" %}
+        <a href="{% url 'cancel_booking' b.id %}"
+           class="btn-ghost px-4 py-2 text-xs md:text-sm">
+          Cancel Booking
+        </a>
+        {% endif %}
+
+        {% if b.payment_status == "Paid" and b.payment_status != "Refunded" %}
+        <a onclick="confirmRefund('{% url 'refund_booking' b.id %}')"
+           class="btn-primary px-4 py-2 text-xs md:text-sm cursor-pointer">
+          Request Refund
+        </a>
+        {% endif %}
+
+        {% if b.payment_status == "Refunded" %}
+        <span class="px-4 py-2 text-xs md:text-sm bg-green-700 text-white rounded-lg">
+          Refunded ✔
+        </span>
+        {% endif %}
+
+        <!-- View Details opens modal -->
+        <button
+          class="btn-ghost px-4 py-2 text-xs md:text-sm"
+          onclick="openBookingDetailsModal(this)"
+          data-resort="{{ b.resort.name }}"
+          data-location="{{ b.resort.location }}"
+          data-checkin="{{ b.check_in }}"
+          data-checkout="{{ b.check_out }}"
+          data-guests="{{ b.guests }}"
+          data-total="{{ b.total_price }}"
+          data-advance="{{ b.advance_paid }}"
+          data-pending="{{ b.pending_amount }}"
+          data-booking-status="{{ b.booking_status }}"
+          data-payment-status="{{ b.payment_status }}"
+          data-receipt-url="{% url 'download_receipt' b.id %}">
+          View Details
+        </button>
+      </div>
+
+      <!-- Refund Policy (only when refunded) -->
+      {% if b.payment_status == "Refunded" %}
+      <div class="mt-4 p-4 bg-gray-900/50 border border-white/10 rounded-xl">
+        <h3 class="text-purple-300 font-semibold mb-1 text-sm">Refund & Cancellation Policy (Summary)</h3>
+        <ul class="text-[11px] text-gray-300 space-y-1">
+          <li>• Only advance amount (₹{{ b.advance_paid }}) is refundable.</li>
+          <li>• Pending amount (₹{{ b.pending_amount }}) is payable at the resort.</li>
+          <li>• Refund requests must be made 24 hours before check-in.</li>
+          <li>• Refunds are processed within 3–7 business days.</li>
+        </ul>
+      </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+  {% endfor %}
+
+</div>
+{% else %}
+<div class="glass p-8 rounded-xl text-center text-gray-300">
+  No bookings found.
+</div>
+{% endif %}
+
+<!-- BOOKING DETAILS MODAL -->
+<div id="bookingDetailsModal"
+     class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-900 rounded-2xl p-6 w-full max-w-md border border-white/10 shadow-2xl relative">
+    <button class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl"
+            onclick="closeBookingDetailsModal()">
+      ×
+    </button>
+
+    <h2 class="text-xl font-bold text-teal-300 mb-3" id="modalResortName"></h2>
+    <p class="text-xs text-gray-400 mb-4" id="modalLocation"></p>
+
+    <div class="space-y-2 text-sm text-gray-200">
+      <p><strong>Check-in:</strong> <span id="modalCheckin"></span></p>
+      <p><strong>Check-out:</strong> <span id="modalCheckout"></span></p>
+      <p><strong>Guests:</strong> <span id="modalGuests"></span></p>
+      <p><strong>Total Amount:</strong> ₹<span id="modalTotal"></span></p>
+      <p class="text-green-300"><strong>Advance Paid:</strong> ₹<span id="modalAdvance"></span></p>
+      <p class="text-yellow-300"><strong>Pending at Resort:</strong> ₹<span id="modalPending"></span></p>
+      <p><strong>Booking Status:</strong> <span id="modalBookingStatus"></span></p>
+      <p><strong>Payment Status:</strong> <span id="modalPaymentStatus"></span></p>
+    </div>
+
+    <div class="mt-5 flex justify-end gap-3">
+      <a id="modalReceiptLink"
+         href="#"
+         class="btn-primary px-4 py-2 text-sm">
+        Download Receipt
+      </a>
+      <button onclick="closeBookingDetailsModal()"
+              class="btn-ghost px-4 py-2 text-sm">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+function confirmRefund(url) {
+  if (confirm("Are you sure you want to request a refund? Only the advance amount will be refunded.")) {
+      window.location.href = url;
+  }
+}
+
+// Filter logic
+document.querySelectorAll(".filter-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    const filter = tab.getAttribute("data-filter");
+
+    document.querySelectorAll(".filter-tab").forEach(t => {
+      t.classList.remove("bg-teal-600", "text-white");
+      t.classList.add("bg-gray-800", "text-gray-200");
+    });
+    tab.classList.add("bg-teal-600", "text-white");
+    tab.classList.remove("bg-gray-800", "text-gray-200");
+
+    document.querySelectorAll(".booking-card").forEach(card => {
+      const bookingStatus = card.getAttribute("data-status-booking");
+      const paymentStatus = card.getAttribute("data-status-payment");
+
+      let show = true;
+      if (filter === "active") {
+        show = (bookingStatus !== "Cancelled" && paymentStatus !== "Refunded");
+      } else if (filter === "cancelled") {
+        show = (bookingStatus === "Cancelled");
+      } else if (filter === "refunded") {
+        show = (paymentStatus === "Refunded");
+      }
+
+      card.style.display = show ? "flex" : "none";
+    });
+  });
+});
+
+// Modal Logic
+function openBookingDetailsModal(btn) {
+  const modal = document.getElementById("bookingDetailsModal");
+  modal.classList.remove("hidden");
+
+  document.getElementById("modalResortName").textContent = btn.dataset.resort;
+  document.getElementById("modalLocation").textContent = btn.dataset.location;
+  document.getElementById("modalCheckin").textContent = btn.dataset.checkin;
+  document.getElementById("modalCheckout").textContent = btn.dataset.checkout;
+  document.getElementById("modalGuests").textContent = btn.dataset.guests;
+  document.getElementById("modalTotal").textContent = btn.dataset.total;
+  document.getElementById("modalAdvance").textContent = btn.dataset.advance;
+  document.getElementById("modalPending").textContent = btn.dataset.pending;
+  document.getElementById("modalBookingStatus").textContent = btn.dataset.bookingStatus;
+  document.getElementById("modalPaymentStatus").textContent = btn.dataset.paymentStatus;
+  document.getElementById("modalReceiptLink").setAttribute("href", btn.dataset.receiptUrl);
+}
+
+function closeBookingDetailsModal() {
+  document.getElementById("bookingDetailsModal").classList.add("hidden");
+}
+</script>
+
+{% endblock %}

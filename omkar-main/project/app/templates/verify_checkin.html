@@ -1,0 +1,24 @@
+<div class="flex justify-center items-center h-screen">
+    <div class="bg-white p-10 rounded-2xl shadow-xl text-center max-w-md">
+
+        <h2 class="text-3xl font-bold mb-3">
+            {{ status }}
+        </h2>
+
+        <p class="text-gray-700 mt-4">
+            Guest: <strong>{{ booking.guest_name }}</strong>
+        </p>
+        <p class="text-gray-700">
+            Resort: <strong>{{ booking.resort.name }}</strong>
+        </p>
+        <p class="text-gray-700">
+            Check-In: {{ booking.check_in }}
+        </p>
+
+        {% if booking.checkin_verified %}
+            <p class="text-green-600 font-bold mt-4">✔ Verified</p>
+        {% else %}
+            <p class="text-red-600 font-bold mt-4">❌ Not Verified</p>
+        {% endif %}
+    </div>
+</div>

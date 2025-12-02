@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="text-4xl font-bold mb-8 text-center">Your Wishlist</h1>
+
+{% if items %}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    {% for wish in items %}
+    <div class="glass p-5 rounded-xl shadow-lg">
+
+        <img src="{{ wish.resort.image.url }}" class="w-full h-48 object-cover rounded-lg">
+
+        <h2 class="text-xl font-bold mt-4">{{ wish.resort.name }}</h2>
+        <p class="text-gray-400">{{ wish.resort.location }}</p>
+        <p class="mt-2 font-semibold text-accent">₹{{ wish.resort.price_per_guest }}/guest</p>
+
+        <div class="flex justify-between mt-4">
+            <!-- Book Now Button -->
+            <a href="{% url 'book_resort' wish.resort.id %}"
+               class="btn-primary text-center px-4 py-2 rounded-lg">
+                Book Now
+            </a>
+
+            <!-- Remove Button -->
+            <a href="{% url 'remove_from_wishlist' wish.resort.id %}"
+               class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                Remove
+            </a>
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+{% else %}
+<p class="text-center text-gray-400 text-lg mt-10">Your wishlist is empty 💔</p>
+{% endif %}
+
+{% endblock %}

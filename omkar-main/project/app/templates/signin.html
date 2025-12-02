@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login – The Arabian{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center py-10">
+  <div class="glass p-8 rounded-2xl shadow-xl w-full max-w-md">
+
+    <h2 class="text-3xl font-bold text-center mb-6"
+        style="color: var(--accent-2)">Welcome Back</h2>
+
+    {% if errmsg %}
+      <div class="bg-red-500 bg-opacity-20 border border-red-400 text-red-300 px-4 py-2 mb-4 rounded">
+        {{ errmsg }}
+      </div>
+    {% endif %}
+
+    <form method="POST" class="space-y-5">
+      {% csrf_token %}
+
+      <input type="text" name="uname" placeholder="Username"
+             class="w-full px-4 py-3 glass rounded-lg focus:outline-none" required>
+
+      <input type="password" name="upass" placeholder="Password"
+             class="w-full px-4 py-3 glass rounded-lg focus:outline-none" required>
+
+      <button type="submit"
+              class="w-full btn-primary text-center py-3 rounded-lg text-lg">
+        Login
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-sm text-gray-400">
+      Forgot password?
+      <a href="{% url 'request_password_reset' %}" class="text-accent underline">Reset Here</a>
+    </p>
+
+    <p class="mt-2 text-center text-sm text-gray-400">
+      Don't have an account?
+      <a href="{% url 'register' %}" class="text-accent underline">Register</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

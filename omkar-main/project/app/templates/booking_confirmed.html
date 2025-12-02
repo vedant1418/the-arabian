@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Booking Confirmed – {{ booking.resort.name }}{% endblock %}
+
+{% block content %}
+
+<style>
+/* Animation and premium UI */
+@keyframes popIn {
+  0% {transform: scale(.5); opacity: 0;}
+  100% {transform: scale(1); opacity: 1;}
+}
+@keyframes fadeUp {
+  0% {transform: translateY(20px); opacity: 0;}
+  100% {transform: translateY(0); opacity: 1;}
+}
+.glass-card {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  animation: fadeUp .7s ease;
+}
+.tick-circle {
+  width: 95px;
+  height: 95px;
+  border-radius: 50%;
+  background: #10B981;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 48px;
+  font-weight: bold;
+  margin: 0 auto;
+  animation: popIn .5s ease;
+  box-shadow: 0 0 15px #10B981;
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+.info-label {color: #ccc;}
+.info-value {color: #fff; font-weight: 600;}
+.success-btn {
+  width: 100%;
+  padding: 14px;
+  background: #10B981;
+  color: white;
+  font-size: 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s;
+}
+.success-btn:hover {background: #0e8d66;}
+</style>
+
+<div class="min-h-screen flex justify-center items-center py-12 px-4">
+
+  <div class="glass-card p-8 w-full max-w-2xl">
+
+      <div class="tick-circle">✔</div>
+
+      <h2 class="text-center text-3xl text-green-400 font-bold mt-4">
+        Booking Confirmed!
+      </h2>
+
+      <p class="text-center text-gray-300 mt-1">
+        Your payment was successful & booking is secured.
+      </p>
+
+      <p class="text-center text-gray-400 mt-2 font-semibold">
+        Booking ID: #{{ booking.id }}
+      </p>
+
+      <hr class="my-5 border-gray-700">
+
+      <!-- Payment Info -->
+      <h3 class="text-xl text-green-300 font-bold mb-2">💳 Payment Details</h3>
+      
+      <div class="info-row">
+        <p class="info-label">Payment Status</p>
+        <p class="info-value">{{ payment_status }}</p>
+      </div>
+      {% if payment_id %}
+      <div class="info-row">
+        <p class="info-label">Payment ID</p>
+        <p class="info-value">{{ payment_id }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Guest Info -->
+      <h3 class="text-xl text-green-300 font-bold mt-6 mb-2">👤 Guest Information</h3>
+      
+      <div class="info-row">
+        <p class="info-label">Name</p>
+        <p class="info-value">{{ booking.guest_name }}</p>
+      </div>
+
+      <div class="info-row">
+        <p class="info-label">Phone</p>
+        <p class="info-value">{{ booking.guest_phone }}</p>
+      </div>
+
+      <div class="info-row">
+        <p class="info-label">Email</p>
+        <p class="info-value">{{ booking.guest_email }}</p>
+      </div>
+
+      <!-- Stay Info -->
+      <h3 class="text-xl text-green-300 font-bold mt-6 mb-2">📅 Stay Details</h3>
+      
+      <div class="info-row">
+        <p class="info-label">Check-In</p>
+        <p class="info-value">{{ booking.check_in }}</p>
+      </div>
+
+      <div class="info-row">
+        <p class="info-label">Check-Out</p>
+        <p class="info-value">{{ booking.check_out }}</p>
+      </div>
+
+      <!-- QR Code -->
+      <h3 class="text-xl text-green-300 font-bold mt-6 mb-2">🎫 Check-In QR</h3>
+      
+      <div class="text-center my-4">
+        <img src="{{ booking.qr_code.url }}" class="w-40 h-40 mx-auto shadow-lg rounded-xl">
+        <p class="text-gray-400 text-sm mt-2">Show this QR at reception.</p>
+      </div>
+
+      <!-- Buttons -->
+      <a href="/booking/{{ booking.id }}/download-receipt/">
+        <button class="success-btn mt-4">Download Receipt (PDF)</button>
+      </a>
+
+  </div>
+</div>
+
+<script>
+// Auto redirect to booking history after 7 sec
+setTimeout(() => {
+    window.location.href = "/booking-history/";
+}, 7000);
+</script>
+
+{% endblock %}

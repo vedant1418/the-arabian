@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="container mx-auto px-4 py-12">
+    <div class="max-w-3xl mx-auto bg-white p-8 shadow-xl rounded-xl">
+        <h1 class="text-3xl font-bold text-purple-900 mb-4">{{ blog.title }}</h1>
+        <p class="text-sm text-gray-500 mb-6">Posted on {{ blog.date_posted }}</p>
+        {% if blog.image %}
+            <img src="{{ blog.image.url }}" class="rounded-xl mb-6" />
+        {% endif %}
+        <p class="text-gray-800 leading-relaxed">{{ blog.content }}</p>
+    </div>
+</section>
+{% endblock %}
