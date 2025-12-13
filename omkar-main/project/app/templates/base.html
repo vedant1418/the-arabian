@@ -199,28 +199,33 @@
            4.5 0 010-6.364z"/>
         </svg>
         <span class="absolute -top-1 -right-2 bg-emerald-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">
-          {{ request.user.wishlist_set.count }}
+          {{ request.user.wishlist_set.count|default:0 }}
+
         </span>
       </a>
       {% endif %}
 
       <!-- Auth buttons -->
-      <div class="hidden md:flex items-center gap-2">
-        {% if user.is_authenticated %}
-          <a href="{% url 'profile' %}" class="btn-ghost text-xs">{{ user.username }}</a>
-          <form method="POST" action="{% url 'logout' %}">
+      <!-- Auth buttons -->
+<div class="hidden md:flex items-center gap-2">
+    {% if user.is_authenticated %}
+        <!-- Profile Icon -->
+        <a href="{% url 'profile' %}" class="btn-ghost text-xs">
+            {{ user.name|default:"U"|slice:":1" }}
+        </a>
+
+        <!-- Logout -->
+        <form method="POST" action="{% url 'logout' %}">
             {% csrf_token %}
             <button class="btn-primary text-xs">Logout</button>
-          </form>
-        {% else %}
-          <a href="{% url 'signin' %}" class="btn-ghost text-xs">Login</a>
-          <a href="{% url 'register' %}" class="btn-primary text-xs">Sign Up</a>
-        {% endif %}
-      </div>
-    </div>
-  </div>
+        </form>
+    {% else %}
+        <!-- Login / Signup -->
+        <a href="{% url 'signin' %}" class="btn-ghost text-xs">Login</a>
+        <a href="{% url 'register' %}" class="btn-primary text-xs">Sign Up</a>
+    {% endif %}
+</div>
 </header>
-
 <!-- Page Content -->
 <main class="container-ll py-10 flex-grow">
   {% block content %}{% endblock %}

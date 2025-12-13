@@ -3,7 +3,42 @@
 
 {% block title %}The Arabian – Premium Waterparks{% endblock %}
 
+
+
+<!-- WISHLIST POPUP -->
 {% block content %}
+
+<!-- ✅ WISHLIST POPUP GOES HERE -->
+{% if messages %}
+  {% for message in messages %}
+    {% if "wishlist" in message.tags %}
+      <div id="wishlist-popup"
+           class="fixed top-6 right-6 bg-teal-500 text-black font-semibold px-6 py-3 rounded-xl shadow-2xl 
+                  opacity-0 translate-y-[-10px] transition-all duration-500 z-[9999]">
+        {{ message }}
+      </div>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const popup = document.getElementById("wishlist-popup");
+          if (popup) {
+            setTimeout(() => popup.classList.remove("opacity-0", "translate-y-[-10px]"), 100);
+            setTimeout(() => popup.classList.add("opacity-0", "translate-y-[-10px]"), 2000);
+            setTimeout(() => popup.remove(), 2600);
+          }
+        });
+      </script>
+    
+  
+
+
+<!-- ⭐ Your existing index content starts here -->
+<!-- HERO -->
+<section class="relative overflow-hidden ...">
+
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
 <!-- HERO -->
 <section
@@ -15,12 +50,10 @@
     background-attachment: fixed;
   "
 >
-  <!-- Dark luxury overlay -->
   <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-teal-900/20"></div>
   <div class="absolute inset-0 backdrop-blur-[2px]"></div>
 
   <div class="relative z-10 px-8 py-16 md:px-14 md:py-24">
-    <!-- Live indicators -->
     <div class="flex flex-wrap items-center gap-3 mb-5">
       <span
         class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full 
@@ -74,7 +107,6 @@
         </div>
       </div>
 
-      <!-- Promo -->
       <aside class="glass p-6 rounded-2xl border border-white/10 shadow-2xl bg-black/30 backdrop-blur-xl">
         <div class="flex justify-between">
           <div>
@@ -106,7 +138,6 @@
   </div>
 </section>
 
-<!-- LIVE MINI BAR -->
 <section class="mb-10">
   <div class="glass rounded-xl px-5 py-3 flex items-center gap-3 text-xs md:text-sm text-gray-200 border border-white/10 shadow-lg">
     <span class="flex items-center gap-1">
@@ -153,7 +184,7 @@
   </form>
 </section>
 
-<!-- GRID -->
+<!-- RESORT GRID -->
 <section id="resorts">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-3xl font-extrabold">Explore Our WaterParks</h2>

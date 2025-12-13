@@ -42,24 +42,23 @@ class GalleryImageAdmin(admin.ModelAdmin):
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ("username", "email", "phone", "is_staff", "is_active")
+    list_display = ("email", "phone", "is_staff", "is_active")
     list_filter = ("is_staff", "is_active")
 
+    ordering = ("email",)   # FIXED (use email, not username)
+
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
-        ("Personal Info", {"fields": ("email", "phone")}),
+        (None, {"fields": ("email", "phone", "password")}),
         ("Permissions", {"fields": ("is_staff", "is_active", "groups", "user_permissions")}),
     )
 
     add_fieldsets = (
         (None, {
             "classes": ("wide",),
-            "fields": ("username", "email", "phone", "password1", "password2", "is_staff", "is_active"),
+            "fields": ("email", "phone", "password1", "password2", "is_staff", "is_active"),
         }),
     )
 
-    search_fields = ("username", "email", "phone")
-    ordering = ("username",)
-
+# admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(PasswordResetOTP)
